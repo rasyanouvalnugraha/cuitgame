@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Rock Paper Scissors</title>
+</head>
+
+<body class="bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 min-h-screen flex items-center justify-center">
+    <!-- Audio element -->
+    <audio id="bgSound" src="sound suit.mp3" loop></audio>
+
+    <!-- Game container -->
+    <div id="app" class="text-white text-center space-y-10 hidden">
+        <div class="summary space-y-5">
+            <h1 class="title text-4xl font-bold tracking-wider">Cuit Game</h1>
+            <div class="bg-white rounded-lg p-5 shadow-lg text-gray-800">
+                <h2 id="inGame" class="text-2xl font-semibold">Ayo Main!</h2>
+                <h3 id="result" class="text-lg font-medium mt-2"></h3>
+            </div>
+        </div>
+
+        <div class="games grid grid-cols-3 gap-4">
+            <button
+                class="option p-4 text-6xl bg-white text-gray-800 rounded-lg shadow-lg hover:scale-110 transition-transform"
+                onclick="pickOption('🖐')">🖐</button>
+            <button
+                class="option p-4 text-6xl bg-white text-gray-800 rounded-lg shadow-lg hover:scale-110 transition-transform"
+                onclick="pickOption('✌')">✌</button>
+            <button
+                class="option p-4 text-6xl bg-white text-gray-800 rounded-lg shadow-lg hover:scale-110 transition-transform"
+                onclick="pickOption('✊')">✊</button>
+        </div>
+    </div>
+
+    <!-- Start button -->
+    <div id="startScreen" class="flex items-center justify-center flex-col">
+        <h1 class="text-4xl text-white font-bold mb-6">Selamat datang di Cuit Game!</h1>
+        <button onclick="startGame()"
+            class="bg-white text-gray-800 font-semibold px-6 py-3 rounded-lg shadow-lg hover:bg-gray-200 transition">
+            Mulai
+        </button>
+    </div>
+
+    <script>
+        // Function to start the game and play the background music
+        function startGame() {
+            // Show the game container
+            document.getElementById('app').classList.remove('hidden');
+            document.getElementById('startScreen').classList.add('hidden');
+
+            // Play background music
+            const bgSound = document.getElementById('bgSound');
+            bgSound.play();
+        }
+
+        // Function to handle player choice and game logic
+        function pickOption(params) {
+            const start = new Start();
+            start.setPlayerOption = params;
+            start.setBotOption = start.botBrain();
+            start.winCalculation();
+
+            const inGame = document.getElementById("inGame");
+            const result = document.getElementById("result");
+
+            inGame.textContent = ".....";
+            result.textContent = "";
+
+            setTimeout(() => {
+                inGame.textContent = `${start.getPlayerOption} VS ${start.getBotOption}`;
+                result.textContent = start.matchResult();
+            }, 500);
+        }
+
+        class Start {
+            constructor() {
+                this.playerName = "Kamu";
+                this.botName = "Botnya sappa";
+                this.playerOption;
+                this.botOption;
+                this.winner = "";
+            }
+
+            get getBotOption() {
+                return this.botOption;
+            }
+
+            set setBotOption(option) {
+                this.botOption = option;
+            }
+
+            get getPlayerOption() {
+                return this.playerOption;
+            }
+
+            set setPlayerOption(option) {
+                this.playerOption = option;
+            }
+
+            botBrain() {
+                const option = ["🖐", "✌", "✊"];
+                return option[Math.floor(Math.random() * option.length)];
+            }
+
+            winCalculation() {
+                if (
+                    (this.botOption === "🖐" && this.playerOption === "✌") ||
+                    (this.botOption === "✌" && this.playerOption === "✊") ||
+                    (this.botOption === "✊" && this.playerOption === "🖐")
+                ) {
+                    return (this.winner = this.playerName);
+                } else if (this.botOption === this.playerOption) {
+                    return (this.winner = "DRAW");
+                } else {
+                    return (this.winner = this.botName);
+                }
+            }
+
+            matchResult() {
+                if (this.winner === "DRAW") {
+                    return "Seri, Cobaa lagi lah!";
+                } else {
+                    return `${this.winner} Menang!`;
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
